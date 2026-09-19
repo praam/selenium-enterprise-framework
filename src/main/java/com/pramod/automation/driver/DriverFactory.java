@@ -7,17 +7,23 @@ public class DriverFactory {
 
     private WebDriver driver;
 
-    
-    public void initializeDriver() {
+    public void initializeDriver(String browser) {
 
-        driver = new ChromeDriver();
+        if (browser.equalsIgnoreCase("chrome")) {
 
+            driver = new ChromeDriver();
+
+        } else {
+
+            throw new IllegalArgumentException(
+                    "Unsupported browser: " + browser
+            );
+        }
     }
 
     public WebDriver getDriver() {
 
         return driver;
-
     }
 
     public void quitDriver() {
@@ -26,7 +32,5 @@ public class DriverFactory {
             driver.quit();
             driver = null;
         }
-
     }
-    
 }
