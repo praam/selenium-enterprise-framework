@@ -2,6 +2,9 @@ package com.pramod.automation.driver;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.util.Map;
 
 public class DriverFactory {
 
@@ -11,9 +14,24 @@ public class DriverFactory {
 
         if (browser.equalsIgnoreCase("chrome")) {
 
-            driver = new ChromeDriver();
+    ChromeOptions options = new ChromeOptions();
 
-        } else {
+    options.addArguments("--disable-notifications");
+
+    options.setExperimentalOption(
+            "prefs",
+            Map.of(
+                    "credentials_enable_service", false,
+                    "profile.password_manager_leak_detection", false,
+                    "profile.password_manager_enabled", false
+            )
+    );
+
+    driver = new ChromeDriver(options);
+
+   }
+
+else {
 
             throw new IllegalArgumentException(
                     "Unsupported browser: " + browser
