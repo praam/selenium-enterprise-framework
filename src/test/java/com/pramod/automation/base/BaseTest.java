@@ -1,16 +1,20 @@
+
 package com.pramod.automation.base;
 
-import com.pramod.automation.config.ConfigReader;
-import com.pramod.automation.driver.DriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+
+import com.pramod.automation.config.ConfigReader;
+import com.pramod.automation.driver.DriverFactory;
+import com.pramod.automation.pages.PageObjectManager;
 
 public class BaseTest {
 
     protected DriverFactory driverFactory;
     protected WebDriver driver;
     protected ConfigReader configReader;
+    protected PageObjectManager pageObjectManager;
 
     @BeforeMethod
     public void setUp() {
@@ -24,6 +28,8 @@ public class BaseTest {
         driverFactory.initializeDriver(browser);
 
         driver = driverFactory.getDriver();
+
+        pageObjectManager = new PageObjectManager(driver);
 
         driver.manage().window().maximize();
     }

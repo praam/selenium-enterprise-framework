@@ -3,38 +3,12 @@ package com.pramod.automation.tests;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.pramod.automation.base.BaseTest;
-import com.pramod.automation.pages.CartPage;
-import com.pramod.automation.pages.CheckoutCompletePage;
-import com.pramod.automation.pages.CheckoutOverviewPage;
-import com.pramod.automation.pages.CheckoutPage;
-import com.pramod.automation.pages.InventoryPage;
-import com.pramod.automation.pages.LoginPage;
 
 public class FirstSeleniumTest extends BaseTest {
-
-    private LoginPage loginPage;
-    private InventoryPage inventoryPage;
-    private CartPage cartPage;
-    private CheckoutPage checkoutPage;
-    private CheckoutOverviewPage checkoutOverviewPage;
-    private CheckoutCompletePage checkoutCompletePage;
-
-    @BeforeMethod
-    public void initializePageObjects() {
-        loginPage = new LoginPage(driver);
-        inventoryPage = new InventoryPage(driver);
-        cartPage = new CartPage(driver);
-        checkoutPage = new CheckoutPage(driver);
-        checkoutOverviewPage = new CheckoutOverviewPage(driver);
-        checkoutCompletePage = new CheckoutCompletePage(driver);
-        }
 
     @Test
     public void verifyApplicationTitle() {
@@ -53,9 +27,9 @@ public class FirstSeleniumTest extends BaseTest {
 
         driver.get(configReader.getProperty("baseUrl"));
 
-        loginPage.login("standard_user", "secret_sauce");
+        pageObjectManager.getLoginPage().login("standard_user", "secret_sauce");
 
-        Assert.assertEquals(inventoryPage.getPageTitle(), "Products");
+        Assert.assertEquals(pageObjectManager.getInventoryPage().getPageTitle(), "Products");
 
         List<String> products = Arrays.asList(
              "Sauce Labs Backpack",
@@ -64,18 +38,18 @@ public class FirstSeleniumTest extends BaseTest {
         );
 
         for (String product : products) {
-            inventoryPage.addProductToCart(product);
+           pageObjectManager.getInventoryPage().addProductToCart(product);
         }
 
-        inventoryPage.clickCart();
+        pageObjectManager.getInventoryPage().clickCart();
 
         System.out.println("Current URL: " + driver.getCurrentUrl());
 
         System.out.println("Current URL: " + driver.getCurrentUrl());
-        System.out.println("Page heading: " + cartPage.getPageTitle());
+        System.out.println("Page heading: " + pageObjectManager.getCartPage().getPageTitle());
 
         Assert.assertEquals(
-        cartPage.getPageTitle(),
+       pageObjectManager.getCartPage().getPageTitle(),
         "Your Cart",
         "Cart page title is incorrect"
       );
@@ -86,7 +60,7 @@ public class FirstSeleniumTest extends BaseTest {
         "Sauce Labs Bolt T-Shirt"
       );
 
-      List<String> actualProducts = cartPage.getCartProductNames();
+      List<String> actualProducts = pageObjectManager.getCartPage().getCartProductNames();
 
       Assert.assertTrue(
         actualProducts.containsAll(expectedProducts),
@@ -99,27 +73,27 @@ public class FirstSeleniumTest extends BaseTest {
         "Cart product count is incorrect"
       );
 
-      System.out.println("Cart page title: " + cartPage.getPageTitle());
+      System.out.println("Cart page title: " + pageObjectManager.getCartPage().getPageTitle());
       System.out.println("Products in cart: " + actualProducts);
 
-      cartPage.clickCheckout();
+      pageObjectManager.getCartPage().clickCheckout();
 
       System.out.println("Checkout URL: " + driver.getCurrentUrl());
 
-      checkoutPage.enterCustomerInformation(
+     pageObjectManager.getCheckoutPage().enterCustomerInformation(
         "Pramod",
         "QA",
         "D15ABC"
      );
 
      Assert.assertEquals(
-        checkoutOverviewPage.getPageTitle(),
+        pageObjectManager.getCheckoutOverviewPage().getPageTitle(),
         "Checkout: Overview",
         "Checkout overview page title is incorrect"
      );
 
      List<String> actualOverviewProducts =
-        checkoutOverviewPage.getProductNames();
+       pageObjectManager.getCheckoutOverviewPage().getProductNames();
 
      Assert.assertTrue(
         actualOverviewProducts.containsAll(expectedProducts),
@@ -134,7 +108,7 @@ public class FirstSeleniumTest extends BaseTest {
      );
 
      List<String> actualQuantities =
-        checkoutOverviewPage.getProductQuantities();
+        pageObjectManager.getCheckoutOverviewPage().getProductQuantities();
 
      List<String> expectedQuantities = Arrays.asList("1","1","1");
 
@@ -146,7 +120,7 @@ public class FirstSeleniumTest extends BaseTest {
      );
 
      List<String> actualPrices =
-        checkoutOverviewPage.getItemPrices();
+       pageObjectManager.getCheckoutOverviewPage().getItemPrices();
 
      List<String> expectedPrices = Arrays.asList(
         "$29.99",
@@ -161,33 +135,33 @@ public class FirstSeleniumTest extends BaseTest {
      );
 
      Assert.assertEquals(
-        checkoutOverviewPage.getSubtotal(),
+        pageObjectManager.getCheckoutOverviewPage().getSubtotal(),
         "Item total: $55.97",
         "Subtotal is incorrect"
      );
 
     Assert.assertEquals(
-        checkoutOverviewPage.getTax(),
+        pageObjectManager.getCheckoutOverviewPage().getTax(),
         "Tax: $4.48",
         "Tax is incorrect"
     );
 
     Assert.assertEquals(
-        checkoutOverviewPage.getTotal(),
+        pageObjectManager.getCheckoutOverviewPage().getTotal(),
         "Total: $60.45",
         "Final total is incorrect"
     );
 
-    checkoutOverviewPage.clickFinish();
+    pageObjectManager.getCheckoutOverviewPage().clickFinish();
 
     Assert.assertEquals(
-        checkoutCompletePage.getConfirmationTitle(),
+        pageObjectManager.getCheckoutCompletePage().getConfirmationTitle(),
         "Thank you for your order!",
         "Order confirmation title is incorrect"
     );
 
     Assert.assertTrue(
-        checkoutCompletePage.getConfirmationMessage()
+       pageObjectManager.getCheckoutCompletePage().getConfirmationMessage()
                 .contains("Your order has been dispatched"),
         "Order confirmation message is incorrect"
     );
